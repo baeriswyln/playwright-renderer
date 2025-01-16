@@ -1,6 +1,4 @@
-FROM node:20-bookworm
-
-RUN npx -y playwright@1.49.1 install --with-deps
+FROM mcr.microsoft.com/playwright:v1.49.1-noble
 
 WORKDIR /usr/src/app
 
