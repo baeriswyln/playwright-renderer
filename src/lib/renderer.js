@@ -29,7 +29,14 @@ export class Renderer {
             await page.goto(url, pageOptions)
 
             if (pageOptions.selector) {
-                await page.waitForFunction(selector => !!document.querySelector(selector), pageOptions.selector)
+                await page.evaluate(async (selector) => {
+                    const delay = ms => new Promise(res => setTimeout(res, ms));
+                    while (!document.querySelector(selector)) {
+                        await delay(100)
+                    }
+                    return !!document.querySelector(selector)
+                }, pageOptions.selector)
+
                 await delay(500)
             }
 
