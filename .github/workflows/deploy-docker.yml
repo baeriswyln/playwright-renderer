@@ -29,5 +29,5 @@ jobs:
       - name: Build and Publish
         run: |
           docker buildx build \
-          --platform linux/arm64 -t $GITHUB_REPOSITORY:latest \
+          --platform linux/arm64,linux/amd64 -t $GITHUB_REPOSITORY:latest \
           --push .
