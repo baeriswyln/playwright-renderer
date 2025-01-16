@@ -11,20 +11,24 @@ export class Renderer {
 
     async html(url, pageOptions) {
         let page
+        let context
 
         try {
-            page = await this.createPage(url, pageOptions)
+            [page, context] = await this.createPage(url, pageOptions)
             return await page.content()
         } finally {
-            await this.closePage(page)
+            await this.closePage(page, context)
         }
     }
 
     async createPage(url, pageOptions) {
         let page;
+        let context;
 
         try {
-            page = await this.browser.newPage()
+            // use separate context for every request to prevent caching
+            context = await this.browser.newContext()
+            page = await context.newPage()
 
             await page.goto(url, pageOptions)
 
@@ -40,19 +44,18 @@ export class Renderer {
                 await delay(500)
             }
 
-            return page
+            return [page, context]
         } catch (e) {
             console.error(e)
-            await this.closePage(page)
+            await this.closePage(page, context)
             throw e
         }
     }
 
-    async closePage(page) {
+    async closePage(page, context) {
         try {
-            if (page && !page.isClosed()) {
-                await page.close()
-            }
+            if (page && !page.isClosed()) await page.close()
+            if (context) await context.close()
         } catch (e) {
 
         }
