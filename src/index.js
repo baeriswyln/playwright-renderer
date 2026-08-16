@@ -34,13 +34,10 @@ app.use((err, req, res, next) => {
     res.status(500).send('Oops, An expected error seems to have occurred.')
 })
 
-// Create renderer and start server.
-createRenderer().then(() => {
-    app.listen(port, () => {
-        console.info(`Listen port on ${port}.`)
-    })
-}).catch(e => {
-    console.error('Fail to initialize renderer.', e)
+// Create renderer (browser is launched lazily on first request) and start server.
+createRenderer()
+app.listen(port, () => {
+    console.info(`Listen port on ${port}.`)
 })
 
 // Terminate process
